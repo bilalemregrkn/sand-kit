@@ -9,32 +9,18 @@ namespace SandFall
     {
         [SerializeField] private SandFallController controller;
 
-        private BrushType    _activeBrushType = BrushType.Freeform;
         private BrushSetting _activeSetting;
-        private SandBrush    _brush;
-
-        public BrushType ActiveBrushType
-        {
-            get => _activeBrushType;
-            set
-            {
-                if (_activeBrushType == value) return;
-                _activeBrushType = value;
-                RebuildBrush();
-                Debug.Log($"[SandFallExample] Brush changed → {value}");
-            }
-        }
-
-        public void SetActiveSetting(BrushSetting setting)
-        {
-            _activeSetting   = setting;
-            _activeBrushType = setting.brushType;
-            RebuildBrush();
-            Debug.Log($"[SandFallExample] BrushSetting applied — type:{setting.brushType} radius:{setting.brushRadius}");
-        }
+        private IBrush       _brush;
 
         private RectTransform _displayRect;
         private Color         _currentColor;
+
+        public void SetActiveSetting(BrushSetting setting)
+        {
+            _activeSetting = setting;
+            _brush = setting.CreateBrush();
+            Debug.Log($"[SandFallExample] Brush set — type:{setting.brushType} radius:{setting.brushRadius}");
+        }
 
         private void Start()
         {
@@ -48,9 +34,8 @@ namespace SandFall
 
             _currentColor = RandomColor();
 
-            // Guarantee a usable brush even if BrushSelector is not wired up yet.
             if (_brush == null)
-                _brush = new SandBrush { BrushType = BrushType.Freeform, Radius = 3 };
+                _brush = new FreeformBrush { Radius = 3 };
 
             Debug.Log("[SandFallExample] Ready.");
         }
@@ -63,16 +48,18 @@ namespace SandFall
 
                 _currentColor = RandomColor();
 
-                // Pick a fresh random sprite from the pack on each new click.
-                if (_activeBrushType == BrushType.Sprite && _activeSetting?.spritePack != null)
-                    _brush.SetSprite(_activeSetting.spritePack.Random());
+                // Sprite brush: rebuild to pick a fresh random sprite, paint once on click.
+                if (_activeSetting != null && _activeSetting.brushType == BrushType.Sprite)
+                {
+                    _brush = _activeSetting.CreateBrush();
+                    PaintAtMouse();
+                    return;
+                }
             }
 
-            bool shouldPaint = _activeBrushType == BrushType.Sprite
-                ? Mouse.current.leftButton.wasPressedThisFrame
-                : Mouse.current.leftButton.isPressed;
-
-            if (shouldPaint && IsPointerOverDisplay())
+            // Freeform and Erase paint while held; Sprite is click-only (handled above).
+            bool isSprite = _activeSetting != null && _activeSetting.brushType == BrushType.Sprite;
+            if (!isSprite && Mouse.current.leftButton.isPressed && IsPointerOverDisplay())
                 PaintAtMouse();
 
             if (Keyboard.current.spaceKey.wasPressedThisFrame)
@@ -84,16 +71,9 @@ namespace SandFall
 
         private bool IsPointerOverDisplay()
         {
-            if (_displayRect == null)
-            {
-                Debug.LogWarning("[SandFallExample] _displayRect is null — cannot hit-test.");
-                return false;
-            }
+            if (_displayRect == null) return false;
 
             Vector2 mousePos = Mouse.current.position.ReadValue();
-
-            // The canvas camera must match the Canvas render mode.
-            // ScreenSpaceOverlay uses null; ScreenSpaceCamera/WorldSpace needs the camera.
             Canvas canvas = _displayRect.GetComponentInParent<Canvas>();
             Camera cam = (canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay)
                 ? canvas.worldCamera
@@ -104,14 +84,9 @@ namespace SandFall
 
         private void PaintAtMouse()
         {
-            if (_displayRect == null || _brush == null)
-            {
-                Debug.LogWarning($"[SandFallExample] PaintAtMouse skipped — displayRect:{_displayRect != null}  brush:{_brush != null}");
-                return;
-            }
+            if (_displayRect == null || _brush == null) return;
 
             Vector2 mousePos = Mouse.current.position.ReadValue();
-
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 _displayRect, mousePos, null, out Vector2 local);
 
@@ -123,29 +98,10 @@ namespace SandFall
             int cx = Mathf.RoundToInt(nx * (grid.Width  - 1));
             int cy = Mathf.RoundToInt(ny * (grid.Height - 1));
 
-            Debug.Log($"[SandFallExample] Paint → grid({cx},{cy})  brush:{_brush.BrushType}  r:{_brush.Radius}");
             _brush.Paint(controller, cx, cy, _currentColor);
         }
 
-        private void RebuildBrush()
-        {
-            if (_activeSetting == null) return;
-
-            _brush = new SandBrush
-            {
-                BrushType = _activeBrushType,
-                Radius    = _activeSetting.brushRadius,
-            };
-
-            if (_activeBrushType == BrushType.Sprite)
-                _brush.SetSprite(_activeSetting.spritePack?.Random());
-
-            Debug.Log($"[SandFallExample] Brush built — type:{_activeBrushType} radius:{_activeSetting.brushRadius}");
-        }
-
-        private static Color RandomColor()
-        {
-            return Color.HSVToRGB(Random.value, Random.Range(0.6f, 1f), Random.Range(0.8f, 1f));
-        }
+        private static Color RandomColor() =>
+            Color.HSVToRGB(Random.value, Random.Range(0.6f, 1f), Random.Range(0.8f, 1f));
     }
 }

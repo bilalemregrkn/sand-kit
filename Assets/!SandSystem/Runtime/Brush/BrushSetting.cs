@@ -19,5 +19,20 @@ namespace SandFall
         public Texture2D cursorTexture;
         [Tooltip("Pixel in the cursor that acts as the click point.")]
         public Vector2   cursorHotspot = Vector2.zero;
+
+        public IBrush CreateBrush()
+        {
+            switch (brushType)
+            {
+                case BrushType.Sprite:
+                    var sb = new SpriteBrush { Radius = brushRadius };
+                    sb.SetSprite(spritePack?.Random());
+                    return sb;
+                case BrushType.Erase:
+                    return new EraseBrush { Radius = brushRadius };
+                default:
+                    return new FreeformBrush { Radius = brushRadius };
+            }
+        }
     }
 }
