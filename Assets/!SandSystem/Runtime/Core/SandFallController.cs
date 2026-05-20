@@ -29,6 +29,7 @@ namespace SandFall
 
             _renderer = GetComponent<SandRenderer>();
             _renderer.Initialize(settings.width, settings.height);
+            _renderer.SetEmptyColor(settings.emptyPixelColor);
 
             if (displayTarget != null)
                 displayTarget.texture = _renderer.Texture;

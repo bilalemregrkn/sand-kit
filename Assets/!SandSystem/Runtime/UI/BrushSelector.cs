@@ -10,6 +10,8 @@ namespace SandFall
 
         public BrushType ActiveBrushType { get; private set; }
 
+        private Texture2D _scaledCursor;
+
         private void Start()
         {
             if (buttons == null || buttons.Length == 0)
@@ -45,28 +47,54 @@ namespace SandFall
             foreach (BrushButton btn in buttons)
                 if (btn != null) btn.SetActive(btn == chosen);
 
-            ApplyCursor(chosen);
-
             Debug.Log($"[BrushSelector] Active brush → {chosen.BrushType}");
+            ApplyCursor(chosen);
         }
 
         private void OnDestroy()
         {
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            if (_scaledCursor != null) Destroy(_scaledCursor);
         }
 
-        private static void ApplyCursor(BrushButton chosen)
+        private void ApplyCursor(BrushButton chosen)
         {
-            if (chosen.CursorTexture != null)
+            if (chosen.CursorTexture == null)
             {
-                Cursor.SetCursor(chosen.CursorTexture, chosen.CursorHotspot, CursorMode.Auto);
-                Debug.Log($"[BrushSelector] Cursor set to '{chosen.CursorTexture.name}' (hotspot {chosen.CursorHotspot}).");
+                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+                return;
+            }
+
+            Texture2D src   = chosen.CursorTexture;
+            float     scale = Mathf.Max(0.01f, chosen.Setting.cursorScale);
+            int       w     = Mathf.RoundToInt(src.width  * scale);
+            int       h     = Mathf.RoundToInt(src.height * scale);
+
+            // Destroy previous scaled copy to avoid leaking textures.
+            if (_scaledCursor != null) Destroy(_scaledCursor);
+
+            if (Mathf.Approximately(scale, 1f))
+            {
+                _scaledCursor = null;
             }
             else
             {
-                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-                Debug.LogWarning($"[BrushSelector] No cursor texture on '{chosen.gameObject.name}' — using default cursor.");
+                // Blit src into a RenderTexture at the new size, then read back.
+                RenderTexture rt = RenderTexture.GetTemporary(w, h, 0, RenderTextureFormat.ARGB32);
+                Graphics.Blit(src, rt);
+                RenderTexture prev = RenderTexture.active;
+                RenderTexture.active = rt;
+                _scaledCursor = new Texture2D(w, h, TextureFormat.ARGB32, false);
+                _scaledCursor.ReadPixels(new Rect(0, 0, w, h), 0, 0);
+                _scaledCursor.Apply(false);
+                RenderTexture.active = prev;
+                RenderTexture.ReleaseTemporary(rt);
             }
+
+            Texture2D cursor = _scaledCursor != null ? _scaledCursor : src;
+            Vector2   n      = chosen.CursorHotspot;
+            Vector2   pixel  = new Vector2(n.x * cursor.width, (1f - n.y) * cursor.height);
+            Cursor.SetCursor(cursor, pixel, CursorMode.Auto);
         }
     }
 }

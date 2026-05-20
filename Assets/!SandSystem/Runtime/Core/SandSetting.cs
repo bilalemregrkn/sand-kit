@@ -12,5 +12,8 @@ namespace SandFall
         [Header("Simulation")]
         public int  stepsPerFixedUpdate = 1;
         public bool enableDiagonalSpread = true;
+
+        [Header("Rendering")]
+        public Color emptyPixelColor = Color.clear;
     }
 }

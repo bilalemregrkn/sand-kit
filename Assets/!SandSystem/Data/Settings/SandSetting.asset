@@ -16,5 +16,4 @@ MonoBehaviour:
   height: 128
   stepsPerFixedUpdate: 1
   enableDiagonalSpread: 1
-  brushRadius: 3
-  brushSprite: {fileID: 0}
+  emptyPixelColor: {r: 0, g: 0, b: 0, a: 1}

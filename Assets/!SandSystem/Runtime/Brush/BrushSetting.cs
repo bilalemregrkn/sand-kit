@@ -17,8 +17,10 @@ namespace SandFall
         [Header("Cursor")]
         [Tooltip("Texture2D used as the cursor when this brush is active. Read/Write must be enabled. Recommended 32x32 or 64x64.")]
         public Texture2D cursorTexture;
-        [Tooltip("Pixel in the cursor that acts as the click point.")]
-        public Vector2   cursorHotspot = Vector2.zero;
+        [Tooltip("Normalized hotspot (0,0) = bottom-left, (1,1) = top-right.")]
+        public Vector2 cursorHotspot = Vector2.zero;
+        [Tooltip("Scale multiplier for the cursor texture. 1 = original size.")]
+        public float cursorScale = 1f;
 
         public IBrush CreateBrush()
         {

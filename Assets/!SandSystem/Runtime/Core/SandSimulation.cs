@@ -26,7 +26,7 @@ namespace SandFall
 
                     // 1. Pull pixel straight down from directly above.
                     PixelContainer above = Grid.Get(x, y + 1);
-                    if (above != null && !above.IsEmpty && above.Pixel.CanMove)
+                    if (!above.IsEmpty && above.Pixel.CanMove)
                     {
                         cell.Pixel = above.Pixel;
                         above.Pixel = null;

@@ -5,7 +5,7 @@ namespace SandFall
     public class SandRenderer : MonoBehaviour
     {
         private Texture2D _texture;
-        private Color[] _buffer;
+        private Color32[] _buffer;
 
         public Texture2D Texture => _texture;
 
@@ -16,8 +16,12 @@ namespace SandFall
                 filterMode = FilterMode.Point,
                 wrapMode   = TextureWrapMode.Clamp
             };
-            _buffer = new Color[width * height];
+            _buffer = new Color32[width * height];
         }
+
+        private Color32 _emptyColor;
+
+        public void SetEmptyColor(Color color) => _emptyColor = (Color32)color;
 
         public void Render(SandGrid grid)
         {
@@ -26,12 +30,12 @@ namespace SandFall
                 for (int x = 0; x < grid.Width; x++)
                 {
                     PixelContainer cell = grid.Get(x, y);
-                    _buffer[x + y * grid.Width] = cell.IsEmpty ? Color.clear : cell.Pixel.Color;
+                    _buffer[x + y * grid.Width] = cell.IsEmpty ? _emptyColor : (Color32)cell.Pixel.Color;
                 }
             }
 
-            _texture.SetPixels(_buffer);
-            _texture.Apply();
+            _texture.SetPixels32(_buffer);
+            _texture.Apply(false);
         }
     }
 }
