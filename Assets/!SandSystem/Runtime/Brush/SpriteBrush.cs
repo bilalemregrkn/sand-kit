@@ -4,8 +4,6 @@ namespace SandFall
 {
     public class SpriteBrush : IBrush
     {
-        public int Radius = 3;
-
         private Color[] _spritePixels;
         private int     _spriteWidth;
         private int     _spriteHeight;

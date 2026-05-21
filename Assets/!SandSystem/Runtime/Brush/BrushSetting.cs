@@ -27,7 +27,7 @@ namespace SandFall
             switch (brushType)
             {
                 case BrushType.Sprite:
-                    var sb = new SpriteBrush { Radius = brushRadius };
+                    var sb = new SpriteBrush();
                     sb.SetSprite(spritePack?.Random());
                     return sb;
                 case BrushType.Erase:

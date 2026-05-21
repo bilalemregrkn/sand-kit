@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SandFall
 {
-    public class Pixel
+    public struct Pixel
     {
         public Color Color;
         public bool CanMove;

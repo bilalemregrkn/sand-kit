@@ -6,8 +6,11 @@ namespace SandFall
     [RequireComponent(typeof(SandRenderer))]
     public class SandFallController : MonoBehaviour
     {
-        [SerializeField] public SandSetting settings;
-        [SerializeField] public RawImage displayTarget;
+        [SerializeField] private SandSetting _settings;
+        [SerializeField] private RawImage    _displayTarget;
+
+        public SandSetting Settings      => _settings;
+        public RawImage    DisplayTarget => _displayTarget;
 
         private SandSimulation _simulation;
         private SandRenderer   _renderer;
@@ -22,22 +25,22 @@ namespace SandFall
 
         private void Awake()
         {
-            _simulation = new SandSimulation(settings.width, settings.height)
+            _simulation = new SandSimulation(_settings.width, _settings.height)
             {
-                EnableDiagonalSpread = settings.enableDiagonalSpread
+                EnableDiagonalSpread = _settings.enableDiagonalSpread
             };
 
             _renderer = GetComponent<SandRenderer>();
-            _renderer.Initialize(settings.width, settings.height);
-            _renderer.SetEmptyColor(settings.emptyPixelColor);
+            _renderer.Initialize(_settings.width, _settings.height);
+            _renderer.SetEmptyColor(_settings.emptyPixelColor);
 
-            if (displayTarget != null)
-                displayTarget.texture = _renderer.Texture;
+            if (_displayTarget != null)
+                _displayTarget.texture = _renderer.Texture;
         }
 
         private void FixedUpdate()
         {
-            for (int i = 0; i < settings.stepsPerFixedUpdate; i++)
+            for (int i = 0; i < _settings.stepsPerFixedUpdate; i++)
                 _simulation.Step();
 
             _renderer.Render(_simulation.Grid);

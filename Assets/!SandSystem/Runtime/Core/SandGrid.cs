@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace SandFall
 {
     public class SandGrid
@@ -15,9 +13,8 @@ namespace SandFall
             Height = height;
             _cells = new PixelContainer[width * height];
 
-            for (int y = 0; y < height; y++)
-                for (int x = 0; x < width; x++)
-                    _cells[x + y * width] = new PixelContainer(new Vector2Int(x, y));
+            for (int i = 0; i < _cells.Length; i++)
+                _cells[i] = new PixelContainer();
         }
 
         public bool InBounds(int x, int y) => x >= 0 && x < Width && y >= 0 && y < Height;
@@ -30,7 +27,7 @@ namespace SandFall
 
         internal PixelContainer GetUnchecked(int x, int y) => _cells[x + y * Width];
 
-        public void Set(int x, int y, Pixel pixel)
+        public void Set(int x, int y, Pixel? pixel)
         {
             if (!InBounds(x, y)) return;
             _cells[x + y * Width].Pixel = pixel;

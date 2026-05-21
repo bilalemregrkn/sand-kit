@@ -24,11 +24,11 @@ namespace SandFall
 
         private void Start()
         {
-            if (controller == null)          { Debug.LogError("[SandFallExample] Controller is not assigned."); return; }
-            if (controller.settings == null) { Debug.LogError("[SandFallExample] SandSetting is not assigned on controller."); return; }
+            if (controller == null)           { Debug.LogError("[SandFallExample] Controller is not assigned."); return; }
+            if (controller.Settings == null) { Debug.LogError("[SandFallExample] SandSetting is not assigned on controller."); return; }
 
-            if (controller.displayTarget != null)
-                _displayRect = controller.displayTarget.rectTransform;
+            if (controller.DisplayTarget != null)
+                _displayRect = controller.DisplayTarget.rectTransform;
             else
                 Debug.LogWarning("[SandFallExample] displayTarget not assigned on controller.");
 

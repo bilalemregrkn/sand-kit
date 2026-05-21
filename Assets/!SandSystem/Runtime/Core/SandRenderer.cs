@@ -29,8 +29,8 @@ namespace SandFall
             {
                 for (int x = 0; x < grid.Width; x++)
                 {
-                    PixelContainer cell = grid.Get(x, y);
-                    _buffer[x + y * grid.Width] = cell.IsEmpty ? _emptyColor : (Color32)cell.Pixel.Color;
+                    PixelContainer cell = grid.GetUnchecked(x, y);
+                    _buffer[x + y * grid.Width] = cell.IsEmpty ? _emptyColor : (Color32)cell.Pixel.Value.Color;
                 }
             }
 

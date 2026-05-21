@@ -26,7 +26,7 @@ namespace SandFall
 
                     // 1. Pull pixel straight down from directly above.
                     PixelContainer above = Grid.GetUnchecked(x, y + 1);
-                    if (!above.IsEmpty && above.Pixel.CanMove)
+                    if (!above.IsEmpty && above.Pixel.Value.CanMove)
                     {
                         cell.Pixel = above.Pixel;
                         above.Pixel = null;
@@ -41,10 +41,10 @@ namespace SandFall
                     bool leftValid = false;
                     bool rightValid = false;
 
-                    PixelContainer neighborLeft  = Grid.Get(x - 1, y);
-                    PixelContainer diagUpLeft    = Grid.Get(x - 1, y + 1);
+                    PixelContainer neighborLeft = Grid.Get(x - 1, y);
+                    PixelContainer diagUpLeft   = Grid.Get(x - 1, y + 1);
                     if (neighborLeft != null && !neighborLeft.IsEmpty &&
-                        diagUpLeft   != null && !diagUpLeft.IsEmpty && diagUpLeft.Pixel.CanMove)
+                        diagUpLeft   != null && !diagUpLeft.IsEmpty && diagUpLeft.Pixel.Value.CanMove)
                     {
                         leftValid = true;
                     }
@@ -52,15 +52,14 @@ namespace SandFall
                     PixelContainer neighborRight = Grid.Get(x + 1, y);
                     PixelContainer diagUpRight   = Grid.Get(x + 1, y + 1);
                     if (neighborRight != null && !neighborRight.IsEmpty &&
-                        diagUpRight   != null && !diagUpRight.IsEmpty && diagUpRight.Pixel.CanMove)
+                        diagUpRight   != null && !diagUpRight.IsEmpty && diagUpRight.Pixel.Value.CanMove)
                     {
                         rightValid = true;
                     }
 
                     if (leftValid && rightValid)
                     {
-                        bool pickLeft = _random.Next(2) == 0;
-                        PixelContainer source = pickLeft ? diagUpLeft : diagUpRight;
+                        PixelContainer source = _random.Next(2) == 0 ? diagUpLeft : diagUpRight;
                         cell.Pixel = source.Pixel;
                         source.Pixel = null;
                     }

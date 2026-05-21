@@ -1,17 +1,10 @@
-using UnityEngine;
-
 namespace SandFall
 {
     public class PixelContainer
     {
-        public Pixel Pixel;
-        public readonly Vector2Int Coordinate;
+        private Pixel? _pixel;
 
-        public bool IsEmpty => Pixel == null;
-
-        public PixelContainer(Vector2Int coordinate)
-        {
-            Coordinate = coordinate;
-        }
+        public Pixel? Pixel { get => _pixel; set => _pixel = value; }
+        public bool IsEmpty => !_pixel.HasValue;
     }
 }
