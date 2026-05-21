@@ -1,0 +1,12 @@
+{
+  "name": "SandFall.Runtime",
+  "rootNamespace": "SandFall",
+  "references": [
+    "Unity.InputSystem",
+    "UnityEngine.UI"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}

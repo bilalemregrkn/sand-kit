@@ -1,0 +1,14 @@
+{
+  "name": "com.bilalemregurkan.sandfall",
+  "version": "1.0.0",
+  "displayName": "SandFall",
+  "description": "A falling-sand pixel simulation for Unity.",
+  "unity": "6000.0",
+  "author": {
+    "name": "Bilal Emre Gürkan"
+  },
+  "dependencies": {
+    "com.unity.inputsystem": "1.19.0",
+    "com.unity.ugui": "2.0.0"
+  }
+}
