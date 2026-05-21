@@ -28,6 +28,8 @@ namespace SandFall
             return _cells[x + y * Width];
         }
 
+        internal PixelContainer GetUnchecked(int x, int y) => _cells[x + y * Width];
+
         public void Set(int x, int y, Pixel pixel)
         {
             if (!InBounds(x, y)) return;

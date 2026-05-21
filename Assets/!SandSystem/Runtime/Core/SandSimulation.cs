@@ -21,11 +21,11 @@ namespace SandFall
             {
                 for (int x = 0; x < Grid.Width; x++)
                 {
-                    PixelContainer cell = Grid.Get(x, y);
+                    PixelContainer cell = Grid.GetUnchecked(x, y);
                     if (!cell.IsEmpty) continue;
 
                     // 1. Pull pixel straight down from directly above.
-                    PixelContainer above = Grid.Get(x, y + 1);
+                    PixelContainer above = Grid.GetUnchecked(x, y + 1);
                     if (!above.IsEmpty && above.Pixel.CanMove)
                     {
                         cell.Pixel = above.Pixel;
@@ -59,7 +59,7 @@ namespace SandFall
 
                     if (leftValid && rightValid)
                     {
-                        bool pickLeft = _random.NextDouble() < 0.5;
+                        bool pickLeft = _random.Next(2) == 0;
                         PixelContainer source = pickLeft ? diagUpLeft : diagUpRight;
                         cell.Pixel = source.Pixel;
                         source.Pixel = null;

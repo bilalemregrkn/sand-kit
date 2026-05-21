@@ -42,10 +42,10 @@ namespace SandFall
 
         private void Update()
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-            {
-                if (!IsPointerOverDisplay()) return;
+            bool overDisplay = IsPointerOverDisplay();
 
+            if (Mouse.current.leftButton.wasPressedThisFrame && overDisplay)
+            {
                 _currentColor = RandomColor();
 
                 // Sprite brush: rebuild to pick a fresh random sprite, paint once on click.
@@ -59,7 +59,7 @@ namespace SandFall
 
             // Freeform and Erase paint while held; Sprite is click-only (handled above).
             bool isSprite = _activeSetting != null && _activeSetting.brushType == BrushType.Sprite;
-            if (!isSprite && Mouse.current.leftButton.isPressed && IsPointerOverDisplay())
+            if (!isSprite && Mouse.current.leftButton.isPressed && overDisplay)
                 PaintAtMouse();
 
             if (Keyboard.current.spaceKey.wasPressedThisFrame)
