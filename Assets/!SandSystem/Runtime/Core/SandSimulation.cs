@@ -81,9 +81,7 @@ namespace SandFall
         public void Spawn(int x, int y, Color color)
         {
             if (!Grid.InBounds(x, y)) return;
-            PixelContainer cell = Grid.Get(x, y);
-            if (cell.IsEmpty)
-                cell.Pixel = new Pixel(color);
+            Grid.Get(x, y).Pixel = new Pixel(color);
         }
 
         public void Clear()
