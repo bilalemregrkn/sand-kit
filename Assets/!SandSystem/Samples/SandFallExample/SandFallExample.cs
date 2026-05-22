@@ -11,9 +11,7 @@ namespace SandFall
 
         private BrushSetting _activeSetting;
         private IBrush       _brush;
-
-        private RectTransform _displayRect;
-        private Color         _currentColor;
+        private Color        _currentColor;
 
         public void SetActiveSetting(BrushSetting setting)
         {
@@ -27,10 +25,8 @@ namespace SandFall
             if (controller == null)           { Debug.LogError("[SandFallExample] Controller is not assigned."); return; }
             if (controller.Settings == null) { Debug.LogError("[SandFallExample] SandSetting is not assigned on controller."); return; }
 
-            if (controller.DisplayTarget != null)
-                _displayRect = controller.DisplayTarget.rectTransform;
-            else
-                Debug.LogWarning("[SandFallExample] displayTarget not assigned on controller.");
+            if (controller.Displayer == null)
+                Debug.LogWarning("[SandFallExample] Displayer not assigned on controller.");
 
             _currentColor = RandomColor();
 
@@ -71,32 +67,20 @@ namespace SandFall
 
         private bool IsPointerOverDisplay()
         {
-            if (_displayRect == null) return false;
-
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-            Canvas canvas = _displayRect.GetComponentInParent<Canvas>();
-            Camera cam = (canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay)
-                ? canvas.worldCamera
-                : null;
-
-            return RectTransformUtility.RectangleContainsScreenPoint(_displayRect, mousePos, cam);
+            if (controller.Displayer == null) return false;
+            return controller.Displayer.IsPointerOver(Mouse.current.position.ReadValue());
         }
 
         private void PaintAtMouse()
         {
-            if (_displayRect == null || _brush == null) return;
+            if (controller.Displayer == null || _brush == null) return;
 
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                _displayRect, mousePos, null, out Vector2 local);
-
-            Rect rect = _displayRect.rect;
-            float nx = (local.x - rect.xMin) / rect.width;
-            float ny = (local.y - rect.yMin) / rect.height;
+            Vector2 screenPos = Mouse.current.position.ReadValue();
+            if (!controller.Displayer.TryGetUV(screenPos, out Vector2 uv)) return;
 
             SandGrid grid = controller.Simulation.Grid;
-            int cx = Mathf.RoundToInt(nx * (grid.Width  - 1));
-            int cy = Mathf.RoundToInt(ny * (grid.Height - 1));
+            int cx = Mathf.RoundToInt(uv.x * (grid.Width  - 1));
+            int cy = Mathf.RoundToInt(uv.y * (grid.Height - 1));
 
             _brush.Paint(controller, cx, cy, _currentColor);
         }

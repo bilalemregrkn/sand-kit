@@ -1,16 +1,15 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace SandFall
 {
     [RequireComponent(typeof(SandRenderer))]
     public class SandFallController : MonoBehaviour
     {
-        [SerializeField] private SandSetting _settings;
-        [SerializeField] private RawImage    _displayTarget;
+        [SerializeField] private SandSetting  _settings;
+        [SerializeField] private DisplayerBase _displayer;
 
-        public SandSetting Settings      => _settings;
-        public RawImage    DisplayTarget => _displayTarget;
+        public SandSetting   Settings  => _settings;
+        public DisplayerBase Displayer => _displayer;
 
         private SandSimulation _simulation;
         private SandRenderer   _renderer;
@@ -34,8 +33,8 @@ namespace SandFall
             _renderer.Initialize(_settings.width, _settings.height);
             _renderer.SetEmptyColor(_settings.emptyPixelColor);
 
-            if (_displayTarget != null)
-                _displayTarget.texture = _renderer.Texture;
+            if (_displayer != null)
+                _displayer.SetTexture(_renderer.Texture);
         }
 
         private void FixedUpdate()
