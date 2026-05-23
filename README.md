@@ -2,6 +2,8 @@
 
 A falling-sand pixel simulation for Unity. Drop it into any project and get a fully interactive sand canvas with a brush system, sprite stamping, and a clean API.
 
+![SandFall demo](sand-kit.gif)
+
 ## Requirements
 
 - Unity 6000.0+
