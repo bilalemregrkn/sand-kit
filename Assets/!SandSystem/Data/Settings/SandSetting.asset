@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ad9fc6bbc9b1414d87b348e56a49f4d, type: 3}
   m_Name: SandSetting
   m_EditorClassIdentifier: Assembly-CSharp::SandFall.SandSetting
-  width: 128
-  height: 128
+  width: 64
+  height: 64
   stepsPerFixedUpdate: 1
   enableDiagonalSpread: 1
   emptyPixelColor: {r: 0.122641504, g: 0.122641504, b: 0.122641504, a: 1}

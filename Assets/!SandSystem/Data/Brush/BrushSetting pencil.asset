@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BrushSetting pencil
   m_EditorClassIdentifier: Assembly-CSharp::SandFall.BrushSetting
   brushType: 0
-  brushRadius: 10
+  brushRadius: 1
   spritePack: {fileID: 0}
   activeColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   inactiveColor: {r: 1, g: 1, b: 1, a: 1}
